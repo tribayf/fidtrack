@@ -1,6 +1,5 @@
 /*
- *  sumtst.c
- *  sumtst (a.k.a. fidtrack)
+ *  fidtrack.c
  *
  *  A Max/MSP external that receives tracking information, containing
  *  the fiducial marker id, the ordering information, x and y coordinates
@@ -31,11 +30,11 @@
 #define MAXDIST 0.34
 
 // Object Struct
-typedef struct _sumtst
+typedef struct _fidtrack
 {
     t_object ob;
     void *outlet;
-} t_sumtst;
+} t_fidtrack;
 
 typedef struct _fiducial
 {
@@ -55,17 +54,17 @@ double dist_matrix[6][6];
 t_atom list[30];
 
 // Global Class Pointer Variable
-void *sumtst_class;
+void *fidtrack_class;
 
 
 
 // Function Prototypes
-void *sumtst_new(t_symbol *s, long argc, t_atom *argv);
-void sumtst_free(t_sumtst *x);
+void *fidtrack_new(t_symbol *s, long argc, t_atom *argv);
+void fidtrack_free(t_fidtrack *x);
 
-void sumtst_addObject(t_sumtst *x, t_symbol *s, long argc, t_atom *argv);
-void sumtst_updateObject(t_sumtst *x, t_symbol *s, long argc, t_atom *argv);
-void sumtst_removeObject(t_sumtst *x, t_symbol *s, long argc, t_atom *argv);
+void fidtrack_addObject(t_fidtrack *x, t_symbol *s, long argc, t_atom *argv);
+void fidtrack_updateObject(t_fidtrack *x, t_symbol *s, long argc, t_atom *argv);
+void fidtrack_removeObject(t_fidtrack *x, t_symbol *s, long argc, t_atom *argv);
 
 void matrix_update();
 void update_targets();
@@ -78,26 +77,26 @@ int main(void)
 {
     t_class *c = NULL;
 
-    c = class_new("sumtst", (method) sumtst_new, (method) sumtst_free, (long) sizeof(t_sumtst), 0L, A_GIMME, 0);
+    c = class_new("fidtrack", (method) fidtrack_new, (method) fidtrack_free, (long) sizeof(t_fidtrack), 0L, A_GIMME, 0);
 
     /* you CAN'T call this from the patcher */
-    class_addmethod(c, (method) sumtst_addObject,    "addObject",    A_GIMME, 0);
-    class_addmethod(c, (method) sumtst_updateObject, "updateObject", A_GIMME, 0);
-    class_addmethod(c, (method) sumtst_removeObject, "removeObject", A_GIMME, 0);
+    class_addmethod(c, (method) fidtrack_addObject,    "addObject",    A_GIMME, 0);
+    class_addmethod(c, (method) fidtrack_updateObject, "updateObject", A_GIMME, 0);
+    class_addmethod(c, (method) fidtrack_removeObject, "removeObject", A_GIMME, 0);
 
     class_register(CLASS_BOX, c);
-    sumtst_class = c;
+    fidtrack_class = c;
 
     return 0;
 }
 
 
 
-void *sumtst_new(t_symbol *s, long argc, t_atom *argv)
+void *fidtrack_new(t_symbol *s, long argc, t_atom *argv)
 {
     int i;
-    t_sumtst *x = NULL;
-    x = (t_sumtst *)object_alloc(sumtst_class);
+    t_fidtrack *x = NULL;
+    x = (t_fidtrack *)object_alloc(fidtrack_class);
     object_post((t_object *)x, "a new %s object was instantiated: 0x%X", s->s_name, x);
     object_post((t_object *)x, "it has %ld arguments", argc);
     x->outlet = outlet_new((t_object*) x, NULL); ///< Create an outlet, NULL means this is a generic outlet
@@ -120,13 +119,13 @@ void *sumtst_new(t_symbol *s, long argc, t_atom *argv)
 
 
 
-void sumtst_free(t_sumtst *x)
+void fidtrack_free(t_fidtrack *x)
 {
 }
 
 
 
-void sumtst_addObject(t_sumtst *x, t_symbol *s, long argc, t_atom *argv)
+void fidtrack_addObject(t_fidtrack *x, t_symbol *s, long argc, t_atom *argv)
 {
     t_atom` `*ap = argv;
     t_symbol *sym;
@@ -191,7 +190,7 @@ void sumtst_addObject(t_sumtst *x, t_symbol *s, long argc, t_atom *argv)
 
 
 
-void sumtst_removeObject(t_sumtst *x, t_symbol *s, long argc, t_atom *argv)
+void fidtrack_removeObject(t_fidtrack *x, t_symbol *s, long argc, t_atom *argv)
 {
     t_atom  *ap = argv;
     t_symbol *sym;
@@ -223,7 +222,7 @@ void sumtst_removeObject(t_sumtst *x, t_symbol *s, long argc, t_atom *argv)
 
 
 
-void sumtst_updateObject(t_sumtst *x, t_symbol *s, long argc, t_atom *argv)
+void fidtrack_updateObject(t_fidtrack *x, t_symbol *s, long argc, t_atom *argv)
 {
     t_atom  *ap = argv;
     t_symbol *sym;
